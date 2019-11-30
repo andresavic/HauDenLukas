@@ -1,0 +1,1 @@
+{"name":"HauDenLukas","version":"1.0.0","dependencies":{"matter-js":"^0.14.2","next":"^9.1.4","react":"^16.12.0","react-dom":"^16.12.0"},"scripts":{"dev":"next","build":"next build","start":"next start"},"readme":"ERROR: No README data found!","_id":"HauDenLukas@1.0.0"}
