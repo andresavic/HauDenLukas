@@ -40,8 +40,6 @@ app.listen(port, err => {
 });
 
 
-const sum = (accumulator, currentValue) => accumulator + currentValue;
-
 function scale(num, in_min, in_max, out_min, out_max) {
   return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -127,11 +125,11 @@ function punch(integral){
   this.highestPointArrived = false;
   Matter.Body.setMass(this.frosch, 1)
   console.log(integral, integral.length);
-  let input = integral.reduce(sum) / integral.length;
+  let input = integral.reduce((a, b) => a + b, 0) / integral.length;
 
-  console.log(integral, integral.length);
+  console.log(input);
 
-  let b = scale(input, 10000, 500000, 0, 0.1) * -1;
+  let b = scale(input, 10000, 500000, 0, 0.4) * -1;
   //console.log("force", b);
 
   Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: b });
