@@ -30,6 +30,7 @@ var state = {
 };
 
 var NUM_LEDS = parseInt(240);
+var MATRIX = parseInt(150);
 pixelData = new Uint32Array(NUM_LEDS);
 
 ws281x.init(NUM_LEDS);
@@ -203,6 +204,12 @@ function renderLeds() {
 
 function renderRealLeds(array){
   for (var i = 0; i < array.length; i++) {
-    pixelData[i] = array[i];
+    if (i >= MATRIX) {
+      for (var m = i; m < 16; m++) {
+        pixelData[m] = array[m];
+      }
+    }else{
+      pixelData[i] = array[i];
+    }
   }
 }
