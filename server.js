@@ -20,6 +20,12 @@ app.get('/', function(req, res) {
   res.send('hello world');
 });
 
+app.get('/punch', function(req, res) {
+  res.send('PUNCH');
+
+  punch([203711, 707211, 735741, 281559, 37639]);
+});
+
 
 process.on('SIGINT', function () {
   ws281x.reset();
@@ -34,6 +40,8 @@ app.listen(port, err => {
 });
 
 
+const sum = (accumulator, currentValue) => accumulator + currentValue;
+
 function scale(num, in_min, in_max, out_min, out_max) {
   return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -42,6 +50,8 @@ function scale(num, in_min, in_max, out_min, out_max) {
 function initMatterPhysic() {
 
   this.engine = Engine.create();
+
+  engine.timing.timeScale = 0.5;
 
   // var render = Render.create({
   //     element: document.body,
@@ -111,29 +121,25 @@ function initMatterPhysic() {
 }
 
 
-function shot(){
+
+function punch(integral){
   this.highestPoint = 1000;
   this.highestPointArrived = false;
   Matter.Body.setMass(this.frosch, 1)
 
-  let input = (1984173 / 6);
+  let input = integral.reduce(sum) / integral.length;
 
   let b = scale(input, 10000, 500000, 0, 0.1) * -1;
   //console.log("force", b);
-
 
   Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: b });
 }
 
 function startPhysicLoop() {
   setInterval(() => {
-                Engine.update(this.engine, 1000 / 60);
+                Engine.update(this.engine, 1000 / 200);
 
-    }, 1000 / 60);
-
-  setTimeout(() => {
-    shot();
-  }, 2000);
+    }, 1000 / 200);
 }
 
 function rgb(r, g, b) {
@@ -145,12 +151,17 @@ function renderLeds() {
 
   let cm = this.range - m;
 
+  for (var i = 0; i < NUM_LEDS; i++) {
+    pixelData[i] = 0;
+  }
 
-  let led = Math.round(scale(cm, 0, this.range, 0, 240));
+  let led = Math.round(scale(cm, 0, this.range, 0, NUM_LEDS));
 
   console.log(`LED ${led} -  ${cm} cm`);
 
+  for (var i = 0; i < led; i++) {
+    pixelData[i] = rgb(255,0,0);
+  }
 
-  pixelData[led] = rgb(255,0,0);
   ws281x.render(pixelData);
 }
