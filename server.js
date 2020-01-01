@@ -171,14 +171,12 @@ function toLed(cm){
 }
 
 function renderLeds() {
-  let difficulty = difficulties[state.difficulty];
-
-  let m = Math.round(this.frosch.position.y - 10);
-
-  let cm = this.range - m;
-
   let ledArray = new Array(NUM_LEDS);
 
+  let difficulty = difficulties[state.difficulty];
+
+  let cm = this.range - Math.round(this.frosch.position.y - 10);
+  let led = toLed(cm);
 
   console.log(`LED ${led} -  ${cm} cm`);
 
