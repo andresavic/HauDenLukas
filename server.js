@@ -196,7 +196,7 @@ function renderLeds() {
 }
 
 function renderRealLeds(array){
-  for (var i = 0; i < array; i++) {
+  for (var i = 0; i < array.length; i++) {
     pixelData[i] = array[i];
   }
 }
