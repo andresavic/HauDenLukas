@@ -9,17 +9,17 @@ const difficulties = {
   0: {
     force: 0.4,
     froschMass: 1,
-    color: rgba(255,0,0)
+    color: rgb(255,0,0)
   },
   1: {
     force: 0.4,
     froschMass: 2,
-    color: rgba(0,255,0)
+    color: rgb(0,255,0)
   },
   2: {
     force: 0.4,
     froschMass: 3,
-    color: rgba(0,0,255)
+    color: rgb(0,0,255)
   }
 }
 
@@ -187,11 +187,11 @@ function renderLeds() {
   }
 
   if (this.state.highestPoint > 0){
-    ledArray[toLed(this.state.highestPoint - 1)] = rgba(200,200,200);
-    ledArray[toLed(this.state.highestPoint)] = rgba(255,255,255);
-    ledArray[toLed(this.state.highestPoint + 1)] = rgba(200,200,200);
+    ledArray[toLed(this.state.highestPoint - 1)] = rgb(200,200,200);
+    ledArray[toLed(this.state.highestPoint)] = rgb(255,255,255);
+    ledArray[toLed(this.state.highestPoint + 1)] = rgb(200,200,200);
   }
-  
+
   renderRealLeds(ledArray);
 
   ws281x.render(pixelData);
