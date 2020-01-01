@@ -206,7 +206,7 @@ function renderRealLeds(array){
   for (var i = 0; i < array.length; i++) {
     if (i >= MATRIX) {
       for (var m = i; m < 16; m++) {
-        pixelData[m] = array[m];
+        pixelData[m] = array[i];
       }
     }else{
       pixelData[i] = array[i];
