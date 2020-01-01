@@ -184,10 +184,10 @@ function renderLeds() {
     ledArray[i] = difficulty.color;
   }
 
-  if (state.highestPoint > 0){
-    ledArray[toLed(state.highestPoint - 1)] = rgb(200,200,200);
+  if (state.highestPoint > 0) {
+    ledArray[toLed(state.highestPoint) - 1] = rgb(200,200,200);
     ledArray[toLed(state.highestPoint)] = rgb(255,255,255);
-    ledArray[toLed(state.highestPoint + 1)] = rgb(200,200,200);
+    ledArray[toLed(state.highestPoint) + 1 ] = rgb(200,200,200);
   }
 
   renderRealLeds(ledArray);
