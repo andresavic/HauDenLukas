@@ -5,6 +5,30 @@ var ws281x = require('rpi-ws281x-native');
 const app = express();
 const port = 8080;
 
+const difficulties = {
+  0: {
+    force: 0.4,
+    froschMass: 1,
+    color: rgba(255,0,0)
+  },
+  1: {
+    force: 0.4,
+    froschMass: 2,
+    color: rgba(0,255,0)
+  },
+  2: {
+    force: 0.4,
+    froschMass: 3,
+    color: rgba(0,0,255)
+  }
+}
+
+this.state = {
+  difficulty: 0,
+  game: 'waiting',
+  highestPoint: 0
+};
+
 var NUM_LEDS = parseInt(240);
 pixelData = new Uint32Array(NUM_LEDS);
 
@@ -46,6 +70,10 @@ function scale(num, in_min, in_max, out_min, out_max) {
 
 
 function initMatterPhysic() {
+  if (this.engine){
+    World.clear(this.engine.world);
+    Engine.clear(this.engine);
+  }
 
   this.engine = Engine.create();
 
@@ -70,12 +98,6 @@ function initMatterPhysic() {
 
   World.add(this.engine.world, [this.frosch, this.end, ground]);
 
-      // run the engine
-  //Engine.run(engine);
-
-  // run the renderer
-//  Render.run(render);
-
   Events.on(this.engine, 'afterUpdate', (event) => {
       var engine = event.source;
 
@@ -84,18 +106,11 @@ function initMatterPhysic() {
 
 
         let m = Math.round(this.highestPoint - 10);
-        console.log("HIGHET POINT", m);
         let cm = this.range - m;
-        console.log("CM", cm);
+        this.state.highestPoint = cm;
+        console.log("HIGHET POINT", m);
 
-        let led = Math.round(scale(cm, 0, this.range, 0, 240));
-
-        console.log("HIGHEST LED", led);
-
-        Matter.World.addBody(engine.world, Bodies.rectangle(400, m, 200, 2, { isStatic: true, isSensor: true }));
-
-
-
+        //Matter.World.addBody(engine.world, Bodies.rectangle(400, m, 200, 2, { isStatic: true, isSensor: true }));
       }else{
         this.highestPoint = this.frosch.position.y;
       }
@@ -120,16 +135,21 @@ function initMatterPhysic() {
 
 
 
-function punch(integral){
+function punch(integral) {
+  this.state.game = 'punch';
+
   this.highestPoint = 1000;
   this.highestPointArrived = false;
-  Matter.Body.setMass(this.frosch, 1)
+
+  let d = difficulties[this.state.difficulty];
+
+  Matter.Body.setMass(this.frosch, d.froschMass)
   console.log(integral, integral.length);
   let input = integral.reduce((a, b) => a + b, 0) / integral.length;
 
   console.log(input);
 
-  let b = scale(input, 10000, 500000, 0, 0.4) * -1;
+  let b = scale(input, 10000, 500000, 0, d.force) * -1;
   //console.log("force", b);
 
   Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: b });
@@ -146,22 +166,39 @@ function rgb(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
+function toLed(cm){
+  return Math.round(scale(cm, 0, this.range, 0, NUM_LEDS));
+}
+
 function renderLeds() {
+  let difficulty = difficulties[this.state.difficulty];
+
   let m = Math.round(this.frosch.position.y - 10);
 
   let cm = this.range - m;
 
-  for (var i = 0; i < NUM_LEDS; i++) {
-    pixelData[i] = 0;
-  }
+  let ledArray = new Array(NUM_LEDS);
 
-  let led = Math.round(scale(cm, 0, this.range, 0, NUM_LEDS));
 
   console.log(`LED ${led} -  ${cm} cm`);
 
   for (var i = 0; i < led; i++) {
-    pixelData[i] = rgb(255,0,0);
+    ledArray[i] = difficulty.color;
   }
 
+  if (this.state.highestPoint > 0){
+    ledArray[toLed(this.state.highestPoint - 1)] = rgba(200,200,200);
+    ledArray[toLed(this.state.highestPoint)] = rgba(255,255,255);
+    ledArray[toLed(this.state.highestPoint + 1)] = rgba(200,200,200);
+  }
+  
+  renderRealLeds(ledArray);
+
   ws281x.render(pixelData);
+}
+
+function renderRealLeds(array){
+  for (var i = 0; i < array; i++) {
+    pixelData[i] = array[i];
+  }
 }
