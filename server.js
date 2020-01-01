@@ -126,8 +126,10 @@ function punch(integral){
   this.highestPoint = 1000;
   this.highestPointArrived = false;
   Matter.Body.setMass(this.frosch, 1)
-
+  console.log(integral, integral.length);
   let input = integral.reduce(sum) / integral.length;
+
+  console.log(integral, integral.length);
 
   let b = scale(input, 10000, 500000, 0, 0.1) * -1;
   //console.log("force", b);
