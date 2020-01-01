@@ -30,7 +30,14 @@ class App extends Component {
     this.highestPoint = 1000;
     this.highestPointArrived = false;
     Matter.Body.setMass(this.frosch, 1)
-    Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: -0.09 });
+
+    let input = (1984173 / 6);
+
+    let b = this.scale(input, 10000, 500000, 0, 0.1) * -1;
+    console.log("force", b);
+
+
+    Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: b });
   }
 
   d(){
@@ -51,10 +58,10 @@ class App extends Component {
     this.highestPoint = 1000;
     this.highestPointArrived = true;
 
-    this.frosch = Bodies.rectangle(400, 600, 20, 20);
-    this.frosch.restitution = 0.8;
+    this.frosch = Bodies.rectangle(400, 600, 20, 20, { restitution: 0.9, inertia: 100 });
 
-    this.end = Bodies.rectangle(400, -5, 100, 10, { label: "bell", isStatic: true});
+
+    this.end = Bodies.rectangle(400, -25, 100, 50, { label: "bell", isStatic: true});
 
 
     var ground = Bodies.rectangle(400, 630, 810, 60, { isStatic: true });
