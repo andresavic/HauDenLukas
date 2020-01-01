@@ -77,7 +77,7 @@ function initMatterPhysic() {
 
   this.engine = Engine.create();
 
-  engine.timing.timeScale = 0.5;
+  engine.timing.timeScale = 0.75;
 
   // var render = Render.create({
   //     element: document.body,
@@ -158,7 +158,7 @@ function punch(integral) {
     state.highestPoint = 0;
     state.game = 'waiting';
     highestPointArrived = false;
-  }, 6000);
+  }, 8000);
 }
 
 function startPhysicLoop() {
