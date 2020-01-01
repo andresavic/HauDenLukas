@@ -1,7 +1,14 @@
 var express = require('express');
 var Matter = require('matter-js');
+var ws281x = require('rpi-ws281x-native');
+
 const app = express();
 const port = 8080;
+
+var NUM_LEDS = parseInt(240);
+pixelData = new Uint32Array(NUM_LEDS);
+
+ws281x.init(NUM_LEDS);
 
 var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -11,6 +18,12 @@ var Engine = Matter.Engine,
 
 app.get('/', function(req, res) {
   res.send('hello world');
+});
+
+
+process.on('SIGINT', function () {
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
 });
 
 app.listen(port, err => {
@@ -123,7 +136,11 @@ function startPhysicLoop() {
   }, 2000);
 }
 
-function renderLeds(){
+function rgb(r, g, b) {
+  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
+function renderLeds() {
   let m = Math.round(this.frosch.position.y - 10);
 
   let cm = this.range - m;
@@ -132,4 +149,8 @@ function renderLeds(){
   let led = Math.round(scale(cm, 0, this.range, 0, 240));
 
   console.log(`LED ${led} -  ${cm} cm`);
+
+
+  pixelData[led] = rgb(255,0,0);
+  ws281x.render(pixelData);
 }
