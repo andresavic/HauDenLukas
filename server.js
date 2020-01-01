@@ -23,7 +23,7 @@ const difficulties = {
   }
 }
 
-this.state = {
+var state = {
   difficulty: 0,
   game: 'waiting',
   highestPoint: 0
@@ -40,11 +40,11 @@ var Engine = Matter.Engine,
     Events = Matter.Events,
     Bodies = Matter.Bodies;
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.send('hello world');
 });
 
-app.get('/punch', function(req, res) {
+app.get('/punch', (req, res) => {
   res.send('PUNCH');
 
   punch([203711, 707211, 735741, 281559, 37639]);
@@ -107,7 +107,7 @@ function initMatterPhysic() {
 
         let m = Math.round(this.highestPoint - 10);
         let cm = this.range - m;
-        this.state.highestPoint = cm;
+        state.highestPoint = cm;
         console.log("HIGHET POINT", m);
 
         //Matter.World.addBody(engine.world, Bodies.rectangle(400, m, 200, 2, { isStatic: true, isSensor: true }));
@@ -136,12 +136,12 @@ function initMatterPhysic() {
 
 
 function punch(integral) {
-  this.state.game = 'punch';
+  state.game = 'punch';
 
   this.highestPoint = 1000;
   this.highestPointArrived = false;
 
-  let d = difficulties[this.state.difficulty];
+  let d = difficulties[state.difficulty];
 
   Matter.Body.setMass(this.frosch, d.froschMass)
   console.log(integral, integral.length);
@@ -171,7 +171,7 @@ function toLed(cm){
 }
 
 function renderLeds() {
-  let difficulty = difficulties[this.state.difficulty];
+  let difficulty = difficulties[state.difficulty];
 
   let m = Math.round(this.frosch.position.y - 10);
 
@@ -186,10 +186,10 @@ function renderLeds() {
     ledArray[i] = difficulty.color;
   }
 
-  if (this.state.highestPoint > 0){
-    ledArray[toLed(this.state.highestPoint - 1)] = rgb(200,200,200);
-    ledArray[toLed(this.state.highestPoint)] = rgb(255,255,255);
-    ledArray[toLed(this.state.highestPoint + 1)] = rgb(200,200,200);
+  if (state.highestPoint > 0){
+    ledArray[toLed(state.highestPoint - 1)] = rgb(200,200,200);
+    ledArray[toLed(state.highestPoint)] = rgb(255,255,255);
+    ledArray[toLed(state.highestPoint + 1)] = rgb(200,200,200);
   }
 
   renderRealLeds(ledArray);
