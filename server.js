@@ -153,6 +153,12 @@ function punch(integral) {
   //console.log("force", b);
 
   Matter.Body.applyForce(this.frosch, this.frosch.position, { x: 0, y: b });
+
+  setTimeout(() => {
+    state.highestPoint = 0;
+    state.game = 'waiting';
+    highestPointArrived = false;
+  }, 6000);
 }
 
 function startPhysicLoop() {
@@ -185,9 +191,9 @@ function renderLeds() {
   }
 
   if (state.highestPoint > 0) {
-    ledArray[toLed(state.highestPoint) - 1] = rgb(200,200,200);
+    ledArray[toLed(state.highestPoint) - 1] = difficulty.color;
     ledArray[toLed(state.highestPoint)] = rgb(255,255,255);
-    ledArray[toLed(state.highestPoint) + 1 ] = rgb(200,200,200);
+    ledArray[toLed(state.highestPoint) + 1 ] = difficulty.color;
   }
 
   renderRealLeds(ledArray);
